@@ -5,12 +5,16 @@ pool:
   vmImage: ubuntu-latest
 
 variables:
+
+  ACR_NAME: 'crshszsanyi'
+  IMAGE_NAME: 'mywebapp:$(Build.BuildId)'
   bkstrgrg: 'rg-sanhorva'
   bkstrg: 'sasanhorva'
   bkcontainer: 'tfstate-shsz-03'
   prefix: 'shsz'
   #bkstrgkey: 'terraform.tfstate'
   IMAGE_REPO: interiordesign/apim
+  IMAGE_REPOSITORY: 'crshszsanyi.azurecr.io/mywebapp'
   TAG: '$(Build.BuildId)'
 
 stages:
@@ -34,6 +38,22 @@ stages:
             artifact: 'manifests'
             publishLocation: 'pipeline'
 
+  - stage: BuildApp
+    jobs:
+    - job: BuildPushImageACR
+      steps: 
+      - task: AzureCLI@2
+        displayName: 'Build and push Docker image'
+        inputs:
+          azureSubscription: 'ZEISSgroup-DI05-ASM-Learning'
+          scriptType: 'bash'
+          scriptLocation: 'inlineScript'
+          addSpnToEnvironment: true
+          inlineScript: |
+            docker build -t $ACR_NAME.azurecr.io/$IMAGE_NAME -f Dockerfile .
+            az acr login --name $ACR_NAME
+            docker tag $IMAGE_NAME $ACR_NAME.azurecr.io/$IMAGE_NAME
+            docker push $ACR_NAME.azurecr.io/$IMAGE_NAME
 
   - stage: dynamic_number
     jobs:
