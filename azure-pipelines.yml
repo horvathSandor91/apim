@@ -29,13 +29,13 @@ stages:
             containerRegistry: 'dockerhub'
             repository: '$(IMAGE_REPO)'
             command: 'buildAndPush'
-            Dockerfile: '$(Build.SourcesDirectory)/app/Dockerfile'
+            Dockerfile: '$(Build.SourcesDirectory)/app_dh/Dockerfile'
 
         # Publish the manifests as artifacts
         - task: PublishPipelineArtifact@1
           inputs:
-            targetPath: '$(Pipeline.Workspace)/s/app'
-            artifact: 'manifests'
+            targetPath: '$(Pipeline.Workspace)/s/app_dh'
+            artifact: 'manifests_dh'
             publishLocation: 'pipeline'
 
   - stage: BuildAppACR
