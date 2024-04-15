@@ -20,7 +20,7 @@ variables:
 stages:
 # build the docker image and push it to dockerhub
   - stage: Build
-    displayName: BuildPushDockerHub
+    displayName: BuildAppDH
     jobs:
       - job: BuildPushImageDockerHub
         steps:
@@ -38,7 +38,7 @@ stages:
             artifact: 'manifests'
             publishLocation: 'pipeline'
 
-  - stage: BuildApp
+  - stage: BuildAppACR
     jobs:
     - job: BuildPushImageACR
       steps: 
@@ -54,6 +54,13 @@ stages:
             az acr login --name '$(ACR_NAME)'
             docker tag '$(IMAGE_NAME)' '$(ACR_NAME)'.azurecr.io/'$(IMAGE_NAME)'
             docker push '$(ACR_NAME)'.azurecr.io/'$(IMAGE_NAME)'
+
+        # Publish the manifests as artifacts
+      - task: PublishPipelineArtifact@1
+        inputs:
+          targetPath: '$(Pipeline.Workspace)/s/app_acr'
+          artifact: 'manifests'
+          publishLocation: 'pipeline'
 
   - stage: dynamic_number
     jobs:
