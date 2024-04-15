@@ -1,2 +1,2 @@
 FROM nginx:alpine
-COPY src/. /usr/share/nginx/html/
+COPY app_acr/. /usr/share/nginx/html/
