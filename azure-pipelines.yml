@@ -19,24 +19,24 @@ variables:
 
 stages:
 # build the docker image and push it to dockerhub
-  - stage: Build
-    displayName: Build&Push
-    jobs:
-      - job: BuildPushImageDockerHub
-        steps:
-        - task: Docker@2
-          inputs:
-            containerRegistry: 'dockerhub'
-            repository: '$(IMAGE_REPO)'
-            command: 'buildAndPush'
-            Dockerfile: '$(Build.SourcesDirectory)/app/Dockerfile'
-
-        # Publish the manifests as artifacts
-        - task: PublishPipelineArtifact@1
-          inputs:
-            targetPath: '$(Pipeline.Workspace)/s/app'
-            artifact: 'manifests'
-            publishLocation: 'pipeline'
+#  - stage: Build
+#    displayName: Build&Push
+#    jobs:
+#      - job: BuildPushImageDockerHub
+#        steps:
+#        - task: Docker@2
+#          inputs:
+#            containerRegistry: 'dockerhub'
+#            repository: '$(IMAGE_REPO)'
+#            command: 'buildAndPush'
+#            Dockerfile: '$(Build.SourcesDirectory)/app/Dockerfile'
+#
+#        # Publish the manifests as artifacts
+#        - task: PublishPipelineArtifact@1
+#          inputs:
+#            targetPath: '$(Pipeline.Workspace)/s/app'
+#            artifact: 'manifests'
+#            publishLocation: 'pipeline'
 
   - stage: BuildApp
     jobs:
@@ -50,7 +50,7 @@ stages:
           scriptLocation: 'inlineScript'
           addSpnToEnvironment: true
           inlineScript: |
-            docker build -t $ACR_NAME.azurecr.io/$IMAGE_NAME -f Dockerfile ./app/
+            docker build -t $ACR_NAME.azurecr.io/$IMAGE_NAME -f app/Dockerfile .
             az acr login --name $ACR_NAME
             docker tag $IMAGE_NAME $ACR_NAME.azurecr.io/$IMAGE_NAME
             docker push $ACR_NAME.azurecr.io/$IMAGE_NAME
