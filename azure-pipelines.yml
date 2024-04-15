@@ -59,7 +59,7 @@ stages:
       - task: PublishPipelineArtifact@1
         inputs:
           targetPath: '$(Pipeline.Workspace)/s/app_acr'
-          artifact: 'manifests'
+          artifact: 'manifests_01'
           publishLocation: 'pipeline'
 
   - stage: dynamic_number
