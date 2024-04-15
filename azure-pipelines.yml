@@ -33,3 +33,205 @@ stages:
             targetPath: '$(Pipeline.Workspace)/s/app'
             artifact: 'manifests'
             publishLocation: 'pipeline'
+
+  - stage: dynamic_number
+    jobs:
+      - job: dynamic_number
+        steps:
+        - task: AzureCLI@2
+          name: dynamic_number
+          displayName: 'increment'
+          inputs:
+            azureSubscription: 'ZEISSgroup-DI05-ASM-Learning'
+            scriptType: 'bash'
+            scriptLocation: 'inlineScript'
+            inlineScript: |
+              storage_account_name='sasanhorva'
+              table_name='shszsatable'
+              latest_number=$((10#$(az storage entity query --account-name $storage_account_name --table-name $table_name --query "items[-1].RowKey" -o tsv --only-show-errors)))
+              echo "Latest Number: $latest_number"
+              postfix=$(printf "%03d" $((latest_number + 1)))
+              latest_number=$(printf "%03d" $((latest_number)))
+              az storage entity insert --account-name $storage_account_name --table-name $table_name --entity PartitionKey=currentid RowKey=$postfix
+              az storage entity delete --account-name $storage_account_name --table-name $table_name --partition-key currentid --row-key $latest_number
+              echo "Next Number: $postfix"
+              echo "##vso[task.setvariable variable=postfix;isOutput=true]$postfix"
+              echo "prefix value: $(prefix)"
+              echo test value: $(test)
+              echo bkstrg value: $(bkstrg)
+              echo bkstrgrg value: $(bkstrgrg)
+              echo "postfix value: $postfix"
+              bkstrgkey="$(prefix)-${postfix}.tfstate"
+              echo "##vso[task.setvariable variable=bkstrgkey;isOutput=true]$bkstrgkey"
+              echo "bkstrgkey: $bkstrgkey"
+
+#  - stage: tfdeploy
+#    dependsOn: dynamic_number 
+#    variables:
+#      postfix: $[ stageDependencies.dynamic_number.dynamic_number.outputs['dynamic_number.postfix'] ]
+#      bkstrgkey: $[ stageDependencies.dynamic_number.dynamic_number.outputs['dynamic_number.bkstrgkey'] ]
+#    jobs:
+#    - deployment: Deploy
+#      displayName: Deploy
+#      environment: sanyi-destroy
+#      strategy:
+#        runOnce:
+#          deploy:
+#            steps:
+#            - checkout: self
+#            - bash: |
+#                # Output: Terraform variables 
+#                TFOPTIONS=$(cat <<SETVAR
+#                  -var="postfix=$postfix" \
+#                  -var="prefix=$prefix" 
+#                SETVAR
+#                )
+#                TFOPTIONS=$(sed 's|-var="[a-zA-Z0-9_]*="||g' <<< $TFOPTIONS)
+#                #TFOPTIONS+=" -var=\"postfix=$(postfix)\""
+#                echo "postfix value: $postfix"
+#                echo "prefix value: $prefix"
+#                echo "tfoptions value: $TFOPTIONS"
+#                echo "##vso[task.setvariable variable=tfoptions;isOutput=true]$TFOPTIONS"
+#              displayName: 'Print variables' 
+#              name: 'setvarStep'
+#              env:
+#                postfix: $(postfix)
+#                prefix: $(prefix)
+#
+#            - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@1
+#              displayName: tfinstall
+#              inputs:
+#                terraformVersion: 'latest'
+#
+#            - bash: |
+#                echo "Prefix value: $(prefix)"
+#                echo "strgkey: $(bkstrgkey)"
+#              displayName: 'Print Prefix Value'
+#              condition: succeeded() # it's the default value
+#               
+#            - task: TerraformTaskV4@4
+#              displayName: 'init'
+#              inputs:
+#                provider: 'azurerm'
+#                command: 'init'
+#                workingDirectory: '$(System.DefaultWorkingDirectory)'
+#                backendServiceArm: 'ZEISSgroup-DI05-ASM-Learning'
+#                backendAzureRmResourceGroupName: '$(bkstrgrg)'
+#                backendAzureRmStorageAccountName: '$(bkstrg)'
+#                backendAzureRmContainerName: '$(bkcontainer)'
+#                backendAzureRmKey: '$(bkstrgkey)'
+#
+#            - task: TerraformTaskV4@4
+#              displayName: validate
+#              inputs:
+#                provider: 'azurerm'
+#                command: 'validate'
+#
+#            - bash: |
+#                echo "Prefix value: $(prefix)"
+#                echo "Postfix value: $(postfix)"
+#                echo "strgkey: $(bkstrgkey)"
+#              displayName: 'Print Prefix & Postfix Value'
+#              condition: succeeded()  # it's the default value
+#            - task: TerraformTaskV4@4
+#              displayName: plan
+#              inputs:
+#                provider: 'azurerm'
+#                command: 'plan'
+#                workingDirectory: '$(System.DefaultWorkingDirectory)'
+#                commandOptions: '$(setvarStep.tfoptions) -out=$(System.DefaultWorkingDirectory)/main.tfplan'
+#                environmentServiceNameAzureRM: 'ZEISSgroup-DI05-ASM-Learning'
+#
+#            - bash: |
+#                echo "Prefix value: $(prefix)"
+#                echo "Postfix value: $(postfix)"
+#                echo "strgkey: $(bkstrgkey)"
+#              displayName: 'Print Prefix & Postfix Value'
+#            - task: TerraformTaskV4@4
+#              displayName: apply
+#              inputs:
+#                provider: 'azurerm'
+#                command: 'apply'
+#                workingDirectory: '$(System.DefaultWorkingDirectory)'
+#                commandOptions: 'main.tfplan'
+#                environmentServiceNameAzureRM: 'ZEISSgroup-DI05-ASM-Learning'
+#
+#  - stage: tfdestroy
+#    displayName: tfdestroy stage
+#    dependsOn: 
+#    - dynamic_number
+#    - tfdeploy
+#    condition:  always()
+#    variables:
+#      postfix: $[ stageDependencies.dynamic_number.dynamic_number.outputs['dynamic_number.postfix'] ]
+#   #   tfoptions: $[ stageDependencies.tfdeploy.apply.outputs['setvarStep.tfoptions'] ]
+#      bkstrgkey: $[ stageDependencies.dynamic_number.dynamic_number.outputs['dynamic_number.bkstrgkey'] ]
+#    jobs:
+#    - deployment: Destroy
+#      displayName: Destroy
+#      environment: sanyi-destroy
+#      strategy:
+#        runOnce:
+#          deploy:
+#            steps:   
+#            - checkout: self
+#            - bash: |
+#                # Output: Terraform variables 
+#                TFOPTIONS=$(cat <<SETVAR
+#                  -var="postfix=$postfix" \
+#                  -var="prefix=$prefix" 
+#                SETVAR
+#                )
+#                TFOPTIONS=$(sed 's|-var="[a-zA-Z0-9_]*="||g' <<< $TFOPTIONS)
+#                #TFOPTIONS+=" -var=\"postfix=$(postfix)\""
+#                echo "postfix value: $postfix"
+#                echo "prefix value: $prefix"
+#                echo "tfoptions value: $TFOPTIONS"
+#                echo "##vso[task.setvariable variable=tfoptions;isOutput=true]$TFOPTIONS"
+#              displayName: 'Print variables'
+#              name: 'setvarStep'
+#              env:
+#                postfix: $(postfix)
+#                prefix: $(prefix)
+#
+#
+#            - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@1
+#              displayName: tfinstall
+#              inputs:
+#                terraformVersion: 'latest'
+#            - task: TerraformTaskV4@4
+#              displayName: 'init'
+#              inputs:
+#                provider: 'azurerm'
+#                command: 'init'
+#                backendServiceArm: 'ZEISSgroup-DI05-ASM-Learning'
+#                workingDirectory: '$(System.DefaultWorkingDirectory)'
+#                backendAzureRmResourceGroupName: '$(bkstrgrg)'
+#                backendAzureRmStorageAccountName: '$(bkstrg)'
+#                backendAzureRmContainerName: '$(bkcontainer)'
+#                backendAzureRmKey: '$(bkstrgkey)'
+#            - task: TerraformTaskV4@4
+#              displayName: plan
+#              inputs:
+#                provider: 'azurerm'
+#                command: 'plan'
+#                workingDirectory: '$(System.DefaultWorkingDirectory)'
+#                commandOptions: '$(setvarStep.tfoptions) -destroy -out=$(System.DefaultWorkingDirectory)/main.tfplan'
+#                environmentServiceNameAzureRM: 'ZEISSgroup-DI05-ASM-Learning'
+#
+#            - task: TerraformTaskV4@4
+#              displayName: destroy
+#              inputs:
+#                provider: 'azurerm'
+#                command: 'apply'
+#                commandOptions: 'main.tfplan'
+#                environmentServiceNameAzureRM: 'ZEISSgroup-DI05-ASM-Learning'
+#
+#            - task: AzureCLI@2
+#              displayName: delete tfstate
+#              inputs:
+#                azureSubscription: 'ZEISSgroup-DI05-ASM-Learning'
+#                scriptType: 'bash'
+#                scriptLocation: 'inlineScript'
+#                inlineScript: |
+#                  az storage blob delete --account-name $(bkstrg) --container-name $(bkcontainer) --name $(bkstrgkey)
