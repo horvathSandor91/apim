@@ -22,7 +22,7 @@ stages:
   - stage: Build
     displayName: Build&Push
     jobs:
-      - job: build_and_push
+      - job: BuildAndPushToDockerHub
         steps:
         - task: Docker@2
           inputs:
