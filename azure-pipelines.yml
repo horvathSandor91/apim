@@ -14,6 +14,7 @@ variables:
   TAG: '$(Build.BuildId)'
 
 stages:
+# build the docker image and push it to dockerhub
   - stage: Build
     displayName: Build&Push
     jobs:
@@ -25,3 +26,10 @@ stages:
             repository: '$(IMAGE_REPO)'
             command: 'buildAndPush'
             Dockerfile: '$(Build.SourcesDirectory)/app/Dockerfile'
+
+        # Publish the manifests as artifacts
+        - task: PublishPipelineArtifact@1
+          inputs:
+            targetPath: '$(Pipeline.Workspace)/s/app'
+            artifact: 'manifests'
+            publishLocation: 'pipeline'
