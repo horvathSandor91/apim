@@ -8,7 +8,7 @@ variables:
   bkstrgrg: 'rg-sanhorva'
   bkstrg: 'sasanhorva'
   bkcontainer: 'tfstate-shsz-03'
-  #prefix: 'shsz'
+  prefix: 'shsz'
   #bkstrgkey: 'terraform.tfstate'
   IMAGE_REPO: interiordesign/apim
   TAG: '$(Build.BuildId)'
@@ -33,6 +33,7 @@ stages:
             targetPath: '$(Pipeline.Workspace)/s/app'
             artifact: 'manifests'
             publishLocation: 'pipeline'
+
 
   - stage: dynamic_number
     jobs:
