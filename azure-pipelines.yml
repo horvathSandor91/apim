@@ -51,7 +51,7 @@ stages:
           addSpnToEnvironment: true
           inlineScript: |
             docker build -t '$(ACR_NAME)'.azurecr.io/'$(IMAGE_NAME)' -f ./app_acr/Dockerfile .
-            az acr login --name '$(ACR_NAME)''
+            az acr login --name '$(ACR_NAME)'
             docker tag '$(IMAGE_NAME)' '$(ACR_NAME)'.azurecr.io/'$(IMAGE_NAME)''
             docker push '$(ACR_NAME)'.azurecr.io/'$(IMAGE_NAME)'
 
