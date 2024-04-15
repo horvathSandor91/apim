@@ -20,7 +20,7 @@ variables:
 stages:
 # build the docker image and push it to dockerhub
   - stage: Build
-    displayName: Build&Push
+    displayName: BuildPushDockerHub
     jobs:
       - job: BuildPushImageDockerHub
         steps:
