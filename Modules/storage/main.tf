@@ -29,6 +29,13 @@ resource "azurerm_storage_blob" "sh-blob" {
 }
 
 
+resource "azurerm_container_registry" "crshszsanyi" {
+  name                = "crshszsanyi"
+  resource_group_name = var.resource_group_name
+  location            = var.location
+  sku                 = "Standard"
+  admin_enabled       = false
+}
 
 # RBAC Role Setup
 #resource "azurerm_role_assignment" "sh-rbac" {
@@ -60,6 +67,10 @@ resource "azurerm_key_vault_access_policy" "sh-policy" {
 
 }
 
+resource "azurerm_storage_table" "shsz-satable" {
+  name                 = "shszsatable"
+  storage_account_name = azurerm_storage_account.sa.name
+}
 
 # resource "azurerm_role_assignment" "kv_role_sa_kvcseu" {
 #   scope                = var.kv-id
