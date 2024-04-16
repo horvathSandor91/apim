@@ -1,7 +1,7 @@
 resource_group_name      = "rg-sanhorva03378-apim"
 location                 = "West Europe"
 application_gateway_name = "shsz-AGW01"
-kv_name                  = "shsz033378-kv"
+kv_name                  = "shsz03378-kv"
 saq_name                 = "sashsz003378"
 subnet_name              = "shsz-subnet0378"
 nsg_name                 = "shsznsg01378"
