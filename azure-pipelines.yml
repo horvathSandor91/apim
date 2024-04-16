@@ -38,7 +38,24 @@ stages:
             artifact: 'manifests_dh'
             publishLocation: 'pipeline'
 
-  
+  - stage: Test
+    displayName: 'Test Docker Image'
+    dependsOn: Build
+    jobs:
+    - job: Test
+      displayName: 'Test Docker Image'
+      steps:
+      - checkout: self
+      - task: Docker@2
+        inputs:
+          containerRegistry: 'dockerhub'
+          repository: '$(IMAGE_REPO)'
+          command: 'buildAndPush'
+          Dockerfile: '$(Build.SourcesDirectory)/app_dh/Dockerfile'
+      - script:
+         docker pull your-image:tag  
+
+
   - stage: BuildAppACR
     dependsOn: [] 
     jobs:
@@ -63,6 +80,56 @@ stages:
             targetPath: '$(Pipeline.Workspace)/s/app_acr'
             artifact: 'manifests_acr'
             publishLocation: 'pipeline'
+
+
+ # - stage: Test
+ #   displayName: 'Test Stage'
+ #   jobs:
+ #   - job: Test
+ #     displayName: 'Test Job'
+ #     steps:
+ #     - task: Docker@2
+ #       displayName: 'Pull image from Azure Container Registry'
+ #       inputs:
+ #         containerRegistry: '$(ACR_NAME)' # Make sure to replace 'yourAzureContainerRegistryConnection' with the name of your ACR connection in Azure DevOps
+ #         repository: '$(IMAGE_REPOSITORY)/$(IMAGE_NAME)' # Replace 'yourACRName' with your ACR name and 'yourImageName' with your image name
+ #         command: 'start'
+
+
+
+
+
+
+#  - stage: TestAppACR
+#    dependsOn: BuildAppACR
+#    jobs:
+#      - job: TestImageACR
+#        steps:
+#        - task: Docker@2
+#          displayName: 'Pull and run Docker image for testing'
+#          inputs:
+#            azureSubscription: 'ZEISSgroup-DI05-ASM-Learning'
+#            containerRegistry: '$(ACR_NAME)'
+#            repository: '$(IMAGE_REPOSITORY)'
+#            command: 'login'
+#            arguments: '-d' 
+#
+
+ # - stage: Test
+ #   condition: and(succeeded(), eq(variables['Build.Reason'], 'Schedule'))
+ #   jobs:
+ #   - job: Test
+ #     steps:
+ #     - task: AzureRmWebAppDeployment@4
+ #       inputs:
+ #         ConnectionType: 'AzureRM'
+ #         azureSubscription: 'ZEISSgroup-DI05-ASM-Learning'
+ #         appType: 'webAppContainer'
+ #         WebAppName: 'testsanyilinuxwebapp'
+ #         DockerNamespace: 'crsanyi'
+ #         DockerRepository: '$(IMAGE_REPOSITORY)'
+ #         DockerImageTag: '$(TAG)'
+
 
   - stage: dynamic_number
     jobs:
