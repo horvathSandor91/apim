@@ -30,7 +30,7 @@ resource "azurerm_storage_blob" "sh-blob" {
 
 
 resource "azurerm_container_registry" "crshszsanyi" {
-  name                = "crshszsanyi"
+  name                = "crshszsanyi03"
   resource_group_name = var.resource_group_name
   location            = var.location
   sku                 = "Standard"
@@ -46,7 +46,7 @@ resource "azurerm_container_registry" "crshszsanyi" {
 
 # Define Storage Queue
 resource "azurerm_storage_queue" "shstgrqueue" {
-  name                  = "sh013-queue"
+  name                  = "shsz013-queue"
   storage_account_name  = azurerm_storage_account.sa.name
 }
 

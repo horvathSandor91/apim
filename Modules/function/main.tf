@@ -1,5 +1,5 @@
 resource "azurerm_service_plan" "shsz-fapp-service-plan" {
-  name                = "shsz-fapp-service-plan"
+  name                = "shsz-fapp-service-plan01378"
   resource_group_name = var.resource_group_name
   location            = var.location
   os_type             = "Linux"
@@ -7,7 +7,7 @@ resource "azurerm_service_plan" "shsz-fapp-service-plan" {
 }
 
 resource "azurerm_linux_function_app" "sh-linux-function-app" {
-  name                = "sh-linux-function-app"
+  name                = "sh-linux-function-app01378"
   resource_group_name = var.resource_group_name
   location            = var.location
 
@@ -23,7 +23,7 @@ resource "azurerm_linux_function_app" "sh-linux-function-app" {
 }
 
 resource "azurerm_monitor_diagnostic_setting" "function_app_diagnostic_setting" {
-  name                = "function-app-insights-diagnostic-setting"
+  name                = "function-app-insights-diagnostic-setting01378"
   storage_account_id  =  var.storage_id
   target_resource_id  =  azurerm_linux_function_app.sh-linux-function-app.id  # Replace with your Function App resource ID
 
