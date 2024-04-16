@@ -1,7 +1,7 @@
 data "azurerm_client_config" "current" {}
 
 resource "azurerm_storage_account" "sa" {
-  name                     = var.saq_name
+  name                     = "${lower(var.saq_name)}"
   resource_group_name      = var.resource_group_name
   location                 = var.location
   account_tier             = "Standard"

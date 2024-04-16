@@ -12,14 +12,21 @@ provider "azurerm" {
 
 data "azurerm_client_config" "current" {}
 
+locals {
+  stage_name          = "${var.prefix}-${var.postfix}"
+  short_stage_name    = "${var.prefix}${var.postfix}" #replace(local.stage_name, "[^a-zA-Z0-9-_().]", "")
+  resource_group_name = "rg-${local.stage_name}"
+  saq_name            = "sa${local.short_stage_name}"
+}
+
 resource "azurerm_resource_group" "rg" {
-  name     = var.resource_group_name
+  name     = local.resource_group_name
   location = var.location
 }
 
 module "key-vault" {
   source              = "./Modules/key-vault"
-  kv_name             = var.kv_name
+  stage_name          = local.short_stage_name
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
 }
@@ -36,7 +43,7 @@ module "network" {
 
 module "storage" {
   source              = "./Modules/storage"
-  saq_name            = var.saq_name
+  saq_name            = local.saq_name
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
   sh_sc               = var.sh_sc
