@@ -6,7 +6,7 @@ pool:
 
 variables:
 
-  ACR_NAME: 'crshszsanyi'
+  ACR_NAME: 'acrshszsanyi'
   IMAGE_NAME: 'mywebapp:$(Build.BuildId)'
   bkstrgrg: 'rg-sanhorva'
   bkstrg: 'sasanhorva'
