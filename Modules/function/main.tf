@@ -22,6 +22,14 @@ resource "azurerm_linux_function_app" "sh-linux-function-app" {
   
 }
 
+resource "null_resource" "delete_app_service_plan" {
+  # This null resource is just a placeholder to enforce the deletion order
+  # It doesn't do anything except depend on the deletion of the Function App
+  depends_on = [azurerm_linux_function_app.sh-linux-function-app]
+
+  # Note: This resource doesn't need any configuration block
+}
+
 resource "azurerm_monitor_diagnostic_setting" "function_app_diagnostic_setting" {
   name                = "function-app-insights-diagnostic-setting01378"
   storage_account_id  =  var.storage_id
