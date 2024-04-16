@@ -52,7 +52,7 @@ stages:
           repository: '$(IMAGE_REPO)'
           Dockerfile: '$(Build.SourcesDirectory)/app_dh/Dockerfile'
       - script:
-         docker pull IMAGE_REPO:TAG
+         docker pull '$(IMAGE_REPO)':'$(TAG)'
 
 
   - stage: BuildAppACR
