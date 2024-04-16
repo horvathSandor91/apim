@@ -235,6 +235,7 @@ stages:
 #                echo "Postfix value: $(postfix)"
 #                echo "strgkey: $(bkstrgkey)"
 #              displayName: 'Print Prefix & Postfix Value'
+
 #            - task: TerraformTaskV4@4
 #              displayName: apply
 #              inputs:
