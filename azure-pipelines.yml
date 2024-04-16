@@ -80,7 +80,6 @@ stages:
             artifact: 'manifests_acr'
             publishLocation: 'pipeline'
 
-
  # - stage: Test
  #   displayName: 'Test Stage'
  #   jobs:
@@ -93,11 +92,6 @@ stages:
  #         containerRegistry: '$(ACR_NAME)' # Make sure to replace 'yourAzureContainerRegistryConnection' with the name of your ACR connection in Azure DevOps
  #         repository: '$(IMAGE_REPOSITORY)/$(IMAGE_NAME)' # Replace 'yourACRName' with your ACR name and 'yourImageName' with your image name
  #         command: 'start'
-
-
-
-
-
 
 #  - stage: TestAppACR
 #    dependsOn: BuildAppACR
@@ -112,7 +106,6 @@ stages:
 #            repository: '$(IMAGE_REPOSITORY)'
 #            command: 'login'
 #            arguments: '-d' 
-#
 
  # - stage: Test
  #   condition: and(succeeded(), eq(variables['Build.Reason'], 'Schedule'))
@@ -128,7 +121,6 @@ stages:
  #         DockerNamespace: 'crsanyi'
  #         DockerRepository: '$(IMAGE_REPOSITORY)'
  #         DockerImageTag: '$(TAG)'
-
 
   - stage: dynamic_number
     jobs:
