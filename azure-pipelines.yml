@@ -50,10 +50,8 @@ stages:
         inputs:
           containerRegistry: 'dockerhub'
           repository: '$(IMAGE_REPO)'
-          command: 'buildAndPush'
-          Dockerfile: '$(Build.SourcesDirectory)/app_dh/Dockerfile'
       - script:
-         docker pull your-image:tag  
+         docker pull IMAGE_REPO:TAG
 
 
   - stage: BuildAppACR
