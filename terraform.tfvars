@@ -1,4 +1,4 @@
-resource_group_name      = "rg-sanhorva03378-apim"
+resource_group_name      = "rg-sanhorva033780-apim"
 location                 = "West Europe"
 application_gateway_name = "shsz-AGW01"
 kv_name                  = "shsz033780-kv"
