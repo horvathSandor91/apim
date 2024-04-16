@@ -35,7 +35,7 @@ resource "azurerm_key_vault" "kv" {
 
 # Create Secrets in Key Vault
 resource "azurerm_key_vault_secret" "sh-secret013" {
-  name         = "shsz01378-secret"
+  name         = "shsz013780-secret"
   value        = "supersecret"
   key_vault_id = azurerm_key_vault.kv.id
 }
@@ -43,7 +43,7 @@ resource "azurerm_key_vault_secret" "sh-secret013" {
 
 # creating key in the sa 
 resource "azurerm_key_vault_key" "sa-sh-cmkey" {
-  name         = "sashsz-key0103"
+  name         = "sashsz-key01030"
   key_vault_id = azurerm_key_vault.kv.id
   key_type     = "RSA"
   key_size     = 2048
