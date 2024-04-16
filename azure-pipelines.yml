@@ -39,7 +39,7 @@ stages:
             publishLocation: 'pipeline'
 
   
-  - stage: BuildApp
+  - stage: BuildAppACR
     dependsOn: [] 
     jobs:
       - job: BuildPushImageACR
