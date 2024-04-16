@@ -185,56 +185,56 @@ stages:
                 postfix: $(postfix)
                 prefix: $(prefix)
                 
-#            - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@1
-#              displayName: tfinstall
-#              inputs:
-#                terraformVersion: 'latest'
-#
-#            - bash: |
-#                echo "Prefix value: $(prefix)"
-#                echo "strgkey: $(bkstrgkey)"
-#              displayName: 'Print Prefix Value'
-#              condition: succeeded() # it's the default value
-#               
-#            - task: TerraformTaskV4@4
-#              displayName: 'init'
-#              inputs:
-#                provider: 'azurerm'
-#                command: 'init'
-#                workingDirectory: '$(System.DefaultWorkingDirectory)'
-#                backendServiceArm: 'ZEISSgroup-DI05-ASM-Learning'
-#                backendAzureRmResourceGroupName: '$(bkstrgrg)'
-#                backendAzureRmStorageAccountName: '$(bkstrg)'
-#                backendAzureRmContainerName: '$(bkcontainer)'
-#                backendAzureRmKey: '$(bkstrgkey)'
-#
-#            - task: TerraformTaskV4@4
-#              displayName: validate
-#              inputs:
-#                provider: 'azurerm'
-#                command: 'validate'
-#
-#            - bash: |
-#                echo "Prefix value: $(prefix)"
-#                echo "Postfix value: $(postfix)"
-#                echo "strgkey: $(bkstrgkey)"
-#              displayName: 'Print Prefix & Postfix Value'
-#              condition: succeeded()  # it's the default value
+            - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@1
+              displayName: tfinstall
+              inputs:
+                terraformVersion: 'latest'
 
-#            - task: TerraformTaskV4@4
-#              displayName: plan
-#              inputs:
-#                provider: 'azurerm'
-#                command: 'plan'
-#                workingDirectory: '$(System.DefaultWorkingDirectory)'
-#                commandOptions: '$(setvarStep.tfoptions) -out=$(System.DefaultWorkingDirectory)/main.tfplan'
-#                environmentServiceNameAzureRM: 'ZEISSgroup-DI05-ASM-Learning'
-#
-#            - bash: |
-#                echo "Prefix value: $(prefix)"
-#                echo "Postfix value: $(postfix)"
-#                echo "strgkey: $(bkstrgkey)"
-#              displayName: 'Print Prefix & Postfix Value'
+            - bash: |
+                echo "Prefix value: $(prefix)"
+                echo "strgkey: $(bkstrgkey)"
+              displayName: 'Print Prefix Value'
+              condition: succeeded() # it's the default value
+               
+            - task: TerraformTaskV4@4
+              displayName: 'init'
+              inputs:
+                provider: 'azurerm'
+                command: 'init'
+                workingDirectory: '$(System.DefaultWorkingDirectory)'
+                backendServiceArm: 'ZEISSgroup-DI05-ASM-Learning'
+                backendAzureRmResourceGroupName: '$(bkstrgrg)'
+                backendAzureRmStorageAccountName: '$(bkstrg)'
+                backendAzureRmContainerName: '$(bkcontainer)'
+                backendAzureRmKey: '$(bkstrgkey)'
+
+            - task: TerraformTaskV4@4
+              displayName: validate
+              inputs:
+                provider: 'azurerm'
+                command: 'validate'
+
+            - bash: |
+                echo "Prefix value: $(prefix)"
+                echo "Postfix value: $(postfix)"
+                echo "strgkey: $(bkstrgkey)"
+              displayName: 'Print Prefix & Postfix Value'
+              condition: succeeded()  # it's the default value
+
+            - task: TerraformTaskV4@4
+              displayName: plan
+              inputs:
+                provider: 'azurerm'
+                command: 'plan'
+                workingDirectory: '$(System.DefaultWorkingDirectory)'
+                commandOptions: '$(setvarStep.tfoptions) -out=$(System.DefaultWorkingDirectory)/main.tfplan'
+                environmentServiceNameAzureRM: 'ZEISSgroup-DI05-ASM-Learning'
+
+            - bash: |
+                echo "Prefix value: $(prefix)"
+                echo "Postfix value: $(postfix)"
+                echo "strgkey: $(bkstrgkey)"
+              displayName: 'Print Prefix & Postfix Value'
 
 #            - task: TerraformTaskV4@4
 #              displayName: apply
