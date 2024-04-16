@@ -236,14 +236,14 @@ stages:
                 echo "strgkey: $(bkstrgkey)"
               displayName: 'Print Prefix & Postfix Value'
 
-#            - task: TerraformTaskV4@4
-#              displayName: apply
-#              inputs:
-#                provider: 'azurerm'
-#                command: 'apply'
-#                workingDirectory: '$(System.DefaultWorkingDirectory)'
-#                commandOptions: 'main.tfplan'
-#                environmentServiceNameAzureRM: 'ZEISSgroup-DI05-ASM-Learning'
+            - task: TerraformTaskV4@4
+              displayName: apply
+              inputs:
+                provider: 'azurerm'
+                command: 'apply'
+                workingDirectory: '$(System.DefaultWorkingDirectory)'
+                commandOptions: 'main.tfplan'
+                environmentServiceNameAzureRM: 'ZEISSgroup-DI05-ASM-Learning'
 
 #  - stage: tfdestroy
 #    displayName: tfdestroy stage
