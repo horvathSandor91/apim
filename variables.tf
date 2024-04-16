@@ -10,3 +10,10 @@ variable "appgtw" {}
 variable "sh_apim" {}
 variable "sh_sc" {}
 variable "sh_blob" {}
+variable "prefix" {
+  type = string
+}
+
+variable "postfix" {
+  type = string
+}
