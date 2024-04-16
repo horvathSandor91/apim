@@ -152,39 +152,39 @@ stages:
               echo "##vso[task.setvariable variable=bkstrgkey;isOutput=true]$bkstrgkey"
               echo "bkstrgkey: $bkstrgkey"
 
-#  - stage: tfdeploy
-#    dependsOn: dynamic_number 
-#    variables:
-#      postfix: $[ stageDependencies.dynamic_number.dynamic_number.outputs['dynamic_number.postfix'] ]
-#      bkstrgkey: $[ stageDependencies.dynamic_number.dynamic_number.outputs['dynamic_number.bkstrgkey'] ]
-#    jobs:
-#    - deployment: Deploy
-#      displayName: Deploy
-#      environment: sanyi-destroy
-#      strategy:
-#        runOnce:
-#          deploy:
-#            steps:
-#            - checkout: self
-#            - bash: |
-#                # Output: Terraform variables 
-#                TFOPTIONS=$(cat <<SETVAR
-#                  -var="postfix=$postfix" \
-#                  -var="prefix=$prefix" 
-#                SETVAR
-#                )
-#                TFOPTIONS=$(sed 's|-var="[a-zA-Z0-9_]*="||g' <<< $TFOPTIONS)
-#                #TFOPTIONS+=" -var=\"postfix=$(postfix)\""
-#                echo "postfix value: $postfix"
-#                echo "prefix value: $prefix"
-#                echo "tfoptions value: $TFOPTIONS"
-#                echo "##vso[task.setvariable variable=tfoptions;isOutput=true]$TFOPTIONS"
-#              displayName: 'Print variables' 
-#              name: 'setvarStep'
-#              env:
-#                postfix: $(postfix)
-#                prefix: $(prefix)
-#
+  - stage: tfdeploy
+    dependsOn: dynamic_number 
+    variables:
+      postfix: $[ stageDependencies.dynamic_number.dynamic_number.outputs['dynamic_number.postfix'] ]
+      bkstrgkey: $[ stageDependencies.dynamic_number.dynamic_number.outputs['dynamic_number.bkstrgkey'] ]
+    jobs:
+    - deployment: Deploy
+      displayName: Deploy
+      environment: sanyi-destroy
+      strategy:
+        runOnce:
+          deploy:
+            steps:
+            - checkout: self
+            - bash: |
+                # Output: Terraform variables 
+                TFOPTIONS=$(cat <<SETVAR
+                  -var="postfix=$postfix" \
+                  -var="prefix=$prefix" 
+                SETVAR
+                )
+                TFOPTIONS=$(sed 's|-var="[a-zA-Z0-9_]*="||g' <<< $TFOPTIONS)
+                #TFOPTIONS+=" -var=\"postfix=$(postfix)\""
+                echo "postfix value: $postfix"
+                echo "prefix value: $prefix"
+                echo "tfoptions value: $TFOPTIONS"
+                echo "##vso[task.setvariable variable=tfoptions;isOutput=true]$TFOPTIONS"
+              displayName: 'Print variables' 
+              name: 'setvarStep'
+              env:
+                postfix: $(postfix)
+                prefix: $(prefix)
+                
 #            - task: charleszipp.azure-pipelines-tasks-terraform.azure-pipelines-tasks-terraform-installer.TerraformInstaller@1
 #              displayName: tfinstall
 #              inputs:
@@ -220,6 +220,7 @@ stages:
 #                echo "strgkey: $(bkstrgkey)"
 #              displayName: 'Print Prefix & Postfix Value'
 #              condition: succeeded()  # it's the default value
+
 #            - task: TerraformTaskV4@4
 #              displayName: plan
 #              inputs:
@@ -242,7 +243,7 @@ stages:
 #                workingDirectory: '$(System.DefaultWorkingDirectory)'
 #                commandOptions: 'main.tfplan'
 #                environmentServiceNameAzureRM: 'ZEISSgroup-DI05-ASM-Learning'
-#
+
 #  - stage: tfdestroy
 #    displayName: tfdestroy stage
 #    dependsOn: 
