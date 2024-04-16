@@ -124,7 +124,7 @@ stages:
 
   - stage: dynamic_number
     jobs:
-      - job: dynamic_number
+      - job: Dynamic_number
         steps:
         - task: AzureCLI@2
           name: dynamic_number
