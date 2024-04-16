@@ -20,7 +20,7 @@ variables:
 stages:
 # build the docker image and push it to dockerhub
   - stage: Build
-    displayName: BuildAppDH
+    displayName: BuildApp
     jobs:
       - job: BuildPushImageDockerHub
         steps:
@@ -38,29 +38,29 @@ stages:
             artifact: 'manifests_dh'
             publishLocation: 'pipeline'
 
-  - stage: BuildAppACR
-    jobs:
-    - job: BuildPushImageACR
-      steps: 
-      - task: AzureCLI@2
-        displayName: 'Build and push Docker image'
-        inputs:
-          azureSubscription: 'ZEISSgroup-DI05-ASM-Learning'
-          scriptType: 'bash'
-          scriptLocation: 'inlineScript'
-          addSpnToEnvironment: true
-          inlineScript: |
-            docker build -t '$(ACR_NAME)'.azurecr.io/'$(IMAGE_NAME)' -f ./app_acr/Dockerfile .
-            az acr login --name '$(ACR_NAME)'
-            docker tag '$(IMAGE_NAME)' '$(ACR_NAME)'.azurecr.io/'$(IMAGE_NAME)'
-            docker push '$(ACR_NAME)'.azurecr.io/'$(IMAGE_NAME)'
+  
 
-        # Publish the manifests as artifacts
-      - task: PublishPipelineArtifact@1
-        inputs:
-          targetPath: '$(Pipeline.Workspace)/s/app_acr'
-          artifact: 'manifests_acr'
-          publishLocation: 'pipeline'
+      - job: BuildPushImageACR
+        steps: 
+        - task: AzureCLI@2
+          displayName: 'Build and push Docker image'
+          inputs:
+            azureSubscription: 'ZEISSgroup-DI05-ASM-Learning'
+            scriptType: 'bash'
+            scriptLocation: 'inlineScript'
+            addSpnToEnvironment: true
+            inlineScript: |
+              docker build -t '$(ACR_NAME)'.azurecr.io/'$(IMAGE_NAME)' -f ./app_acr/Dockerfile .
+              az acr login --name '$(ACR_NAME)'
+              docker tag '$(IMAGE_NAME)' '$(ACR_NAME)'.azurecr.io/'$(IMAGE_NAME)'
+              docker push '$(ACR_NAME)'.azurecr.io/'$(IMAGE_NAME)'
+  
+          # Publish the manifests as artifacts
+        - task: PublishPipelineArtifact@1
+          inputs:
+            targetPath: '$(Pipeline.Workspace)/s/app_acr'
+            artifact: 'manifests_acr'
+            publishLocation: 'pipeline'
 
   - stage: dynamic_number
     jobs:
