@@ -7,7 +7,7 @@ resource "azurerm_service_plan" "shsz-fapp-service-plan" {
 }
 
 resource "azurerm_linux_function_app" "sh-linux-function-app" {
-  name                = "sh-linux-function-app01378"
+  name                = var.fapp_name
   resource_group_name = var.resource_group_name
   location            = var.location
 

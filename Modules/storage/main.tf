@@ -30,7 +30,7 @@ resource "azurerm_storage_blob" "sh-blob" {
 
 
 resource "azurerm_container_registry" "crshszsanyi" {
-  name                = "crshszsanyi03"
+  name                = var.cr_name
   resource_group_name = var.resource_group_name
   location            = var.location
   sku                 = "Standard"

@@ -10,6 +10,8 @@ variable "appgtw" {}
 variable "apim_name" {}
 variable "sh_sc" {}
 variable "sh_blob" {}
+variable "fapp_name" {}
+variable "cr_name" {}
 variable "prefix" {
   type = string
 }

@@ -5,3 +5,4 @@ variable "sh_sc" {}
 variable "sh_blob" {}
 variable "kv-key-name" {}
 variable "kv-id" {}
+variable "cr_name" {}

@@ -5,3 +5,4 @@ variable "saakey" {}
 variable "storage_id" {}
 #variable "insight" {}
 #variable "insightkey" {}
+variable "fapp_name" {}

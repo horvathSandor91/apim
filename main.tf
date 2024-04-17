@@ -18,6 +18,8 @@ locals {
   resource_group_name = "rg-${local.stage_name}"
   saq_name            = "sa${local.short_stage_name}"
   apim_name           = "${var.prefix}-${var.postfix}-apim"
+  fapp_name           = "${var.prefix}-${var.postfix}-fapp"
+  cr_name             = "${var.prefix}-${var.postfix}-cr"
 }
 
 resource "azurerm_resource_group" "rg" {
@@ -51,6 +53,7 @@ module "storage" {
   sh_blob             = var.sh_blob
   kv-key-name         = module.key-vault.kv-key.name
   kv-id               = module.key-vault.kv-out.id
+  cr_name             = local.cr_name
 
   depends_on = [module.key-vault]
 }
@@ -80,6 +83,7 @@ module "function" {
   storage_name        = module.storage.storage-out.name
   saakey              = module.storage.storage-out.primary_access_key
   storage_id          = module.storage.storage-out.id
+  fapp_name           = local.fapp_name
   #insight             = module.apim.appinsight.application_insights_connection_string
   #insightkey          = module.apim.appinsight.application_insights.instrumentation_key
 }
