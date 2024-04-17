@@ -1,3 +1,3 @@
 variable "resource_group_name" {}
 variable "location" {}
-variable "sh_apim" {}
+variable "apim_name" {}

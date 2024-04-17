@@ -17,6 +17,7 @@ locals {
   short_stage_name    = "${var.prefix}${var.postfix}" #replace(local.stage_name, "[^a-zA-Z0-9-_().]", "")
   resource_group_name = "rg-${local.stage_name}"
   saq_name            = "sa${local.short_stage_name}"
+  apim_name           = "${var.prefix}-${var.postfix}-apim"
 }
 
 resource "azurerm_resource_group" "rg" {
@@ -58,7 +59,7 @@ module "apim" {
   source              = "./Modules/apim"
   resource_group_name = azurerm_resource_group.rg.name
   location            = azurerm_resource_group.rg.location
-  sh_apim             = var.sh_apim
+  apim_name           = local.apim_name
 }
 
 module "apigtw" {

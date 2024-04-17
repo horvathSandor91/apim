@@ -16,7 +16,7 @@ resource "azurerm_log_analytics_workspace" "shsz-log-an" {
 
 
 resource "azurerm_api_management" "sh-apim" {
-  name                = var.sh_apim
+  name                = var.apim_name
   location            = var.location
   resource_group_name = var.resource_group_name
   publisher_name      = "Zeiss DI Training"
