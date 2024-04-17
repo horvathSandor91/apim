@@ -245,36 +245,36 @@ stages:
                 commandOptions: 'main.tfplan'
                 environmentServiceNameAzureRM: 'ZEISSgroup-DI05-ASM-Learning'
 
-- stage: PreDestroyTasks
-  displayName: Pre-Destroy Tasks
-  jobs:
-  - job: UnlockAndRemoveTerraformState
-    displayName: Unlock and Remove Terraform State
-    pool:
-      vmImage: 'ubuntu-latest'
-    steps:
-    - task: Bash@3
-      displayName: 'Unlock and Remove Terraform State'
-      inputs:
-        targetType: 'inline'
-        script: |
-          echo "Removing TFState file for ${STAGE}"
-          
-          AZSAKEY=$(az storage account keys list -g "${{ variables.bkstrgrg }}" -n "${{ variables.bkstrg }}" --only-show-errors | jq -r '[.[] | select(.permissions == "FULL") | .value] | .[0]')
-          
-          if [[ ! -z $AZSAKEY ]]; then
-            echo "Checking Terraform state file for CI Stage $STAGE"
+  - stage: PreDestroyTasks
+    displayName: Pre-Destroy Tasks
+    jobs:
+    - job: UnlockAndRemoveTerraformState
+      displayName: Unlock and Remove Terraform State
+      pool:
+        vmImage: 'ubuntu-latest'
+      steps:
+      - task: Bash@3
+        displayName: 'Unlock and Remove Terraform State'
+        inputs:
+          targetType: 'inline'
+          script: |
+            echo "Removing TFState file for ${STAGE}"
             
-            TFSTATE=$(az storage blob list --container-name tfstate --account-name "${{ variables.bkstrg }}" --account-key "${AZSAKEY}" --only-show-errors --query "[?(name=='$STAGE.tfstate')].{TFSFile:name,Status:(properties.lease.status)}" -o json 2>/dev/null | jq -c '.[]')
+            AZSAKEY=$(az storage account keys list -g "${{ variables.bkstrgrg }}" -n "${{ variables.bkstrg }}" --only-show-errors | jq -r '[.[] | select(.permissions == "FULL") | .value] | .[0]')
             
-            if [[ $(jq -r '.Status' <<< "${TFSTATE}") == "locked" ]]; then
-              echo "TFState is locked, breaking lease: " $(jq -c '.' <<< "${TFSTATE}")
-              az storage blob lease break --blob-name $(jq -r '.TFSFile' <<< "${TFSTATE}") --container-name tfstate --account-name "${{ variables.bkstrg }}" --account-key "${AZSAKEY}" --only-show-errors
+            if [[ ! -z $AZSAKEY ]]; then
+              echo "Checking Terraform state file for CI Stage $STAGE"
+              
+              TFSTATE=$(az storage blob list --container-name tfstate --account-name "${{ variables.bkstrg }}" --account-key "${AZSAKEY}" --only-show-errors --query "[?(name=='$STAGE.tfstate')].{TFSFile:name,Status:(properties.lease.status)}" -o json 2>/dev/null | jq -c '.[]')
+              
+              if [[ $(jq -r '.Status' <<< "${TFSTATE}") == "locked" ]]; then
+                echo "TFState is locked, breaking lease: " $(jq -c '.' <<< "${TFSTATE}")
+                az storage blob lease break --blob-name $(jq -r '.TFSFile' <<< "${TFSTATE}") --container-name tfstate --account-name "${{ variables.bkstrg }}" --account-key "${AZSAKEY}" --only-show-errors
+              fi
+              
+              echo "Delete CI STAGE: $STAGE.tfstate"
+              az storage fs file delete -p "/${STAGE}.tfstate" --auth-mode key -f tfstate --account-name "${{ variables.bkstrg }}" --account-key "${AZSAKEY }}" --yes --only-show-errors
             fi
-            
-            echo "Delete CI STAGE: $STAGE.tfstate"
-            az storage fs file delete -p "/${STAGE}.tfstate" --auth-mode key -f tfstate --account-name "${{ variables.bkstrg }}" --account-key "${AZSAKEY }}" --yes --only-show-errors
-          fi
 
   - stage: tfdestroy
     displayName: tfdestroy stage
