@@ -19,7 +19,7 @@ locals {
   saq_name            = "sa${local.short_stage_name}"
   apim_name           = "${var.prefix}-${var.postfix}-apim"
   fapp_name           = "${var.prefix}-${var.postfix}-fapp"
-  cr_name             = "${var.prefix}-${var.postfix}-cr"
+  cr_name             = "cr${local.short_stage_name}"
 }
 
 resource "azurerm_resource_group" "rg" {
