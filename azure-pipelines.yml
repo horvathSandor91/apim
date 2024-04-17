@@ -245,7 +245,6 @@ stages:
                 commandOptions: 'main.tfplan'
                 environmentServiceNameAzureRM: 'ZEISSgroup-DI05-ASM-Learning'
 
-stages:
 - stage: PreDestroyTasks
   displayName: Pre-Destroy Tasks
   jobs:
